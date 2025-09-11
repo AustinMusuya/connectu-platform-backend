@@ -20,7 +20,7 @@ This project was developed as part of the **ProDev Backend Engineering program**
 
 ---
 
-## 🚀 Features
+## Features
 
 ### 1. **Post Management**
 
@@ -49,7 +49,7 @@ This project was developed as part of the **ProDev Backend Engineering program**
 
 ---
 
-## ⚙️ Prerequisites
+## Prerequisites
 
 - **Python 3.8+**
 - **PostgreSQL 13+**
@@ -58,7 +58,7 @@ This project was developed as part of the **ProDev Backend Engineering program**
 
 ---
 
-## 🛠 Installation
+## Installation
 
 You can run this project either **via Docker** or in a **local Python environment**.
 
@@ -69,8 +69,8 @@ You can run this project either **via Docker** or in a **local Python environmen
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/AustinMusuya/social-media-feed-backend.git
-cd social-media-feed-backend
+git clone https://github.com/AustinMusuya/connectu-platform-backend.git
+cd connectu-platform-backend
 ```
 
 2. **Create `.env` file**
@@ -121,8 +121,8 @@ docker compose exec web python manage.py createsuperuser
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/AustinMusuya/social-media-feed-backend.git
-cd social-media-feed-backend
+git clone https://github.com/AustinMusuya/connectu-platform-backend.git
+cd connectu-platform-backend
 ```
 
 2. **Create virtual environment**
@@ -176,7 +176,7 @@ python manage.py runserver
 
 ---
 
-## 💻 Usage
+## Usage
 
 ### Admin Features
 
@@ -216,7 +216,7 @@ mutation {
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 GraphQL Playground:  
 ![GraphQL Playground](assets/graphql_playground.png)
@@ -226,7 +226,7 @@ Admin Panel:
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Run tests using:
 
