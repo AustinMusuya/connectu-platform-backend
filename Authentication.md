@@ -5,7 +5,18 @@ This document explains how to register, log in, log out, and use tokens with our
 
 ---
 
-## 1. Registration
+
+## Table of Contents
+
+- [Registration](#registration)
+- [Login a User](#login-a-user)
+- [Logout a User](#logout-a-user)
+- [Refreshing Tokens](#refreshing-tokens)
+- [Using Tokens for Protected Endpoints](#using-tokens-for-protected-endpoints)
+- [Example Protected Query](#example-protected-query)
+- [Summary](#summary)
+
+## Registration
 
 **Mutation**
 
@@ -41,7 +52,8 @@ mutation {
 
 ---
 
-## 2. Login (Obtain Access & Refresh Tokens)
+## Login a User 
+(Obtain Access & Refresh Tokens)
 
 **Mutation**
 
@@ -78,7 +90,7 @@ Save both `token` and `refreshToken`.
 
 ---
 
-## 3. Using Tokens for Protected Endpoints
+## Using Tokens for Protected Endpoints
 
 - **Access Token** is required for queries/mutations that need authentication.
 - Send it in the **HTTP header**:
@@ -98,7 +110,7 @@ Authorization: JWT <access_token>
 
 ---
 
-## 4. Refreshing Tokens
+## Refreshing Tokens
 
 When the access token expires, use the refresh token to obtain a new one.
 
@@ -132,7 +144,8 @@ This returns a new valid access token.
 
 ---
 
-## 5. Logout (Revoke Token)
+## Logout a User 
+(Revoke Token)
 
 To log out a user, revoke the refresh token:
 
@@ -160,7 +173,7 @@ Once revoked, the refresh token is invalid and cannot be used to generate new ac
 
 ---
 
-## 6. Example Protected Query
+## Example Protected Query
 
 ```graphql
 query{
