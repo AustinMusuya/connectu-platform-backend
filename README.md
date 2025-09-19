@@ -185,34 +185,13 @@ python manage.py runserver
 
 ### User Features
 
-- Query and mutate posts using the **GraphQL Playground**.
-- Example query:
+Query and mutate posts using the **GraphQL Playground**.
 
-```graphql
-query {
-  allPosts {
-    id
-    content
-    createdAt
-    author {
-      username
-    }
-  }
-}
-```
+#### Authentication Guide
+- [Authentication Guide](./Authentication.md)
 
-- Example mutation:
-
-```graphql
-mutation {
-  createPost(content: "My first post!") {
-    post {
-      id
-      content
-    }
-  }
-}
-```
+#### User Interactions Guide
+- [User Interactions](./User-Interactions.md)
 
 ---
 

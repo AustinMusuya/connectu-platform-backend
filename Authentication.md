@@ -5,7 +5,18 @@ This document explains how to register, log in, log out, and use tokens with our
 
 ---
 
-## 1. Registration
+
+## Table of Contents
+
+- [Registration](#registration)
+- [Login a User](#login-a-user)
+- [Logout a User](#logout-a-user)
+- [Refreshing Tokens](#refreshing-tokens)
+- [Using Tokens for Protected Endpoints](#using-tokens-for-protected-endpoints)
+- [Example Protected Query](#example-protected-query)
+- [Summary](#summary)
+
+## Registration
 
 **Mutation**
 
@@ -22,13 +33,27 @@ mutation {
   }
 }
 ```
+**Json Response**
 
+```json
+{
+  "data": {
+    "register": {
+      "errors": null,
+      "success": true,
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbWFtYUBtYWlsLmNvbSIsImV4cCI6MTc1ODMwNzY2Miwib3JpZ0lhdCI6MTc1ODMwNjc2Mn0.-nq0tPH6y-DwQ35HiY4n7DcMmtio6LDkindvloMwVBw",
+      "refreshToken": "d78368a79b62748d1c26a98c9782cd388470c03a"
+    }
+  }
+}
+```
 - Only `email` and `password` are strictly required by our backend.
 - On success, an activation email is sent (if configured).
 
 ---
 
-## 2. Login (Obtain Access & Refresh Tokens)
+## Login a User 
+(Obtain Access & Refresh Tokens)
 
 **Mutation**
 
@@ -43,12 +68,29 @@ mutation {
   }
 }
 ```
-
+**Json Response**
+```json
+{
+  "data": {
+    "tokenAuth": {
+      "success": true,
+      "errors": null,
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbWFtYUBtYWlsLmNvbSIsImV4cCI6MTc1ODMwNzg3Miwib3JpZ0lhdCI6MTc1ODMwNjk3Mn0.KjWtYLo-oh6-LfePCb90ffeKiuws0eorNH_aZ--epY0",
+      "refreshToken": "ed8e11dc5a50e900e068e9a1deca988b3c5be053",
+      "payload": {
+        "email": "user@example.com",
+        "exp": 1758307872,
+        "origIat": 1758306972
+      }
+    }
+  }
+}
+```
 Save both `token` and `refreshToken`.
 
 ---
 
-## 3. Using Tokens for Protected Endpoints
+## Using Tokens for Protected Endpoints
 
 - **Access Token** is required for queries/mutations that need authentication.
 - Send it in the **HTTP header**:
@@ -68,7 +110,7 @@ Authorization: JWT <access_token>
 
 ---
 
-## 4. Refreshing Tokens
+## Refreshing Tokens
 
 When the access token expires, use the refresh token to obtain a new one.
 
@@ -82,14 +124,32 @@ mutation {
   }
 }
 ```
+**Json Response**
+```json
+{
+  "data": {
+    "refreshToken": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InlvbWFtYUBtYWlsLmNvbSIsImV4cCI6MTc1ODMwODIxNCwib3JpZ0lhdCI6MTc1ODMwNzMxNH0.hUEf44X8_Bs14zr0YVkJo3bPJRNbKnQ0xJ9tT0COV6U",
+      "payload": {
+        "email": "user@example.com",
+        "exp": 1758308214,
+        "origIat": 1758307314
+      }
+    }
+  }
+}
+```
 
 This returns a new valid access token.
 
 ---
 
-## 5. Logout (Revoke Token)
+## Logout a User 
+(Revoke Token)
 
 To log out a user, revoke the refresh token:
+
+**Mutation**
 
 ```graphql
 mutation {
@@ -98,27 +158,54 @@ mutation {
   }
 }
 ```
-
+**Json Response**
+```json
+{
+  "data": {
+    "revokeToken": {
+      "revoked": 1758307431,
+      "success": true
+    }
+  }
+}
+```
 Once revoked, the refresh token is invalid and cannot be used to generate new access tokens.
 
 ---
 
-## 6. Example Protected Query
+## Example Protected Query
 
 ```graphql
-query {
-  me {
+query{
+  me{
+    id
     username
     email
     isActive
+    dateJoined
   }
 }
 ```
 
-This will only work if you include:
-
+**Json Response**
+```json
+{
+  "data": {
+    "me": {
+      "id": "VXNlck5vZGU6MQ==",
+      "username": "testuser",
+      "email": "user@example.com",
+      "isActive": true,
+      "dateJoined": "2025-09-19T18:32:41.339501+00:00"
+    }
+  }
+}
 ```
-Authorization: JWT <access_token>
+
+This will only work if you include access token in Request Headers:
+
+```graphql
+"Authorization": "JWT <access_token>"
 ```
 
 ---
