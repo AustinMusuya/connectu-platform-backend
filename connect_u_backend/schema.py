@@ -3,6 +3,7 @@ from graphql_auth.schema import UserQuery as AuthUserQuery, MeQuery
 from graphql_auth import mutations
 from graphql_jwt.refresh_token.models import RefreshToken
 from users.schema import UserQuery
+from users.schema import Mutation as UserMutation
 
 
 
@@ -48,7 +49,7 @@ class AuthMutation(graphene.ObjectType):
 class Query(AuthUserQuery, UserQuery, MeQuery, graphene.ObjectType):
     pass
 
-class Mutation(AuthMutation, graphene.ObjectType):
+class Mutation(AuthMutation, UserMutation, graphene.ObjectType):
    pass
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
