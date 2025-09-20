@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from django.contrib.auth import get_user_model
-from .models import Post, Comment, Like
+from .models import Post, Comment, PostLike, CommentLike
 from graphql_jwt.decorators import login_required
 
 User = get_user_model()
@@ -16,9 +16,14 @@ class CommentType(DjangoObjectType):
         model = Comment
         fields = '__all__'
 
-class LikeType(DjangoObjectType):
+class PostLikeType(DjangoObjectType):
     class Meta:
-        model = Like
+        model = PostLike
+        fields = '__all__'
+
+class CommentLikeType(DjangoObjectType):
+    class Meta:
+        model = CommentLike
         fields = '__all__'
 
 
@@ -32,9 +37,9 @@ class Query(graphene.ObjectType):
     post = graphene.Field(PostType, id=graphene.ID(required=True))
     comments_post = graphene.List(CommentType, post_id=graphene.ID(required=True))
     comments_count = graphene.Int(post_id=graphene.ID(required=True))
-    likes_post = graphene.List(LikeType, post_id=graphene.ID(required=True))
+    likes_post = graphene.List(PostLikeType, post_id=graphene.ID(required=True))
     like_count = graphene.Int(post_id=graphene.ID(required=True))
-    likes_comment = graphene.List(LikeType, comment_id=graphene.ID(required=True))
+    likes_comment = graphene.List(CommentLikeType, comment_id=graphene.ID(required=True))
     like_count_comment = graphene.Int(comment_id=graphene.ID(required=True))
     # shares = graphene.List(ShareType, post_id=graphene.ID(required=True)) ##### Future implementation ######
 
@@ -192,7 +197,7 @@ class DeleteCommentComment(graphene.Mutation):
 
     
 class CreateLikePost(graphene.Mutation):
-    like = graphene.Field(LikeType)
+    like = graphene.Field(PostLikeType)
 
     class Arguments:
         post_id = graphene.ID(required=True)
@@ -204,7 +209,7 @@ class CreateLikePost(graphene.Mutation):
     def mutate(self, info, post_id):
         user = info.context.user
         post = Post.objects.get(pk=post_id)
-        like, created = Like.objects.get_or_create(post=post, user=user)
+        like, created = PostLike.objects.get_or_create(post=post, user=user)
         if not created:
             return CreateLikePost(success=False, message="You have already liked this post.")
         
@@ -221,14 +226,14 @@ class UnlikePost(graphene.Mutation):
     def mutate(self, info, post_id):
         user = info.context.user
         try:
-            like = Like.objects.get(post__id=post_id, user=user)
+            like = PostLike.objects.get(post__id=post_id, user=user)
             like.delete()
             return UnlikePost(success=True, message="Post unliked successfully.")
-        except Like.DoesNotExist:
+        except PostLike.DoesNotExist:
             return UnlikePost(success=False, message="You have not liked this post.")
     
 class CreateLikeComment(graphene.Mutation):
-    like = graphene.Field(LikeType)
+    like = graphene.Field(CommentLikeType)
 
     class Arguments:
         comment_id = graphene.ID(required=True)
@@ -240,7 +245,7 @@ class CreateLikeComment(graphene.Mutation):
     def mutate(self, info, comment_id):
         user = info.context.user
         comment = Comment.objects.get(pk=comment_id)
-        like, created = Like.objects.get_or_create(comment=comment, user=user)
+        like, created = CommentLike.objects.get_or_create(comment=comment, user=user)
         if not created:
             return CreateLikeComment(success=False, message="You have already liked this comment.")
         
@@ -257,10 +262,10 @@ class UnlikeComment(graphene.Mutation):
     def mutate(self, info, comment_id):
         user = info.context.user
         try:
-            like = Like.objects.get(comment__id=comment_id, user=user)
+            like = CommentLike.objects.get(comment__id=comment_id, user=user)
             like.delete()
             return UnlikeComment(success=True, message="Comment unliked successfully.")
-        except Like.DoesNotExist:
+        except CommentLike.DoesNotExist:
             return UnlikeComment(success=False, message="You have not liked this comment.")
         
         

@@ -27,7 +27,7 @@ class Comment(models.Model):
     def __str__(self):
         return f'Comment by {self.author.username} on {self.post.title}'
 
-class Like(models.Model):
+class PostLike(models.Model):
     post = models.ForeignKey(Post, related_name='likes', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -37,6 +37,17 @@ class Like(models.Model):
 
     def __str__(self):
         return f'Like by {self.user.username} on {self.post.title}'
+    
+class CommentLike(models.Model):
+    comment = models.ForeignKey(Comment, related_name='likes', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='comment_likes', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('comment', 'user')
+
+    def __str__(self):
+        return f'Like by {self.user.username} on comment {self.comment.id}'
 
   
 # class Share(models.Model): ##### Future implementation ######
