@@ -35,7 +35,7 @@ class CommentLikeType(DjangoObjectType):
 class Query(graphene.ObjectType):
     posts = graphene.List(PostType)
     post = graphene.Field(PostType, id=graphene.ID(required=True))
-    comments_post = graphene.List(CommentType, post_id=graphene.ID(required=True))
+    comments = graphene.List(CommentType, post_id=graphene.ID(required=True))
     comments_count = graphene.Int(post_id=graphene.ID(required=True))
     likes_post = graphene.List(PostLikeType, post_id=graphene.ID(required=True))
     like_count = graphene.Int(post_id=graphene.ID(required=True))
@@ -56,7 +56,7 @@ class Query(graphene.ObjectType):
 
     # get comments for a post
     @login_required
-    def resolve_comments_post(self, info, post_id):
+    def resolve_comments(self, info, post_id):
         return Comment.objects.filter(post__id=post_id)
     
     # get comment count for a post
@@ -67,22 +67,22 @@ class Query(graphene.ObjectType):
     # get likes for a post
     @login_required
     def resolve_likes_post(self, info, post_id):
-        return Like.objects.filter(post__id=post_id)
+        return PostLike.objects.filter(post__id=post_id)
     
     # get like count for a post
     @login_required
     def resolve_like_count(self, info, post_id):
-        return Like.objects.filter(post__id=post_id).count()
+        return PostLike.objects.filter(post__id=post_id).count()
     
     # get likes for a comment
     @login_required
     def resolve_likes_comment(self, info, comment_id):
-        return Like.objects.filter(comment__id=comment_id)
+        return CommentLike.objects.filter(comment__id=comment_id)
     
     # get like count for a comment
     @login_required
     def resolve_like_count_comment(self, info, comment_id):
-        return Like.objects.filter(comment__id=comment_id).count()
+        return CommentLike.objects.filter(comment__id=comment_id).count()
 
 
     # @login_required
