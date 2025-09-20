@@ -2,8 +2,9 @@ import graphene
 from graphql_auth.schema import UserQuery as AuthUserQuery, MeQuery
 from graphql_auth import mutations
 from graphql_jwt.refresh_token.models import RefreshToken
-from users.schema import UserQuery
-from users.schema import Mutation as UserMutation
+from users.schema import UserQuery, Mutation as UserMutation
+from posts.schema import Query as PostsQuery, Mutation as PostsMutation
+
 
 
 
@@ -46,10 +47,10 @@ class AuthMutation(graphene.ObjectType):
     # Custom logout mutation
     logout_user = LogoutUser.Field()
 
-class Query(AuthUserQuery, UserQuery, MeQuery, graphene.ObjectType):
+class Query(AuthUserQuery, UserQuery, MeQuery, PostsQuery, graphene.ObjectType):
     pass
 
-class Mutation(AuthMutation, UserMutation, graphene.ObjectType):
+class Mutation(AuthMutation, UserMutation, PostsMutation, graphene.ObjectType):
    pass
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
