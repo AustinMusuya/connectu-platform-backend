@@ -231,6 +231,50 @@ query {
 
 ---
 
+## Important Note on `id` vs `pk`
+
+When performing follow/unfollow mutations, you must pass the **user’s `pk` (primary key)** as the `userId` argument.  
+
+- The `id` field you see in queries (e.g., `"id": "VXNlck5vZGU6MQ=="`) is a **base64-encoded global ID string**, not an integer.  
+- The GraphQL schema expects an integer for `userId`.  
+
+**Example**
+
+```graphql
+mutation {
+  followUser(userId: 1) {
+    success
+    message
+    follower {
+      id
+      username
+    }
+    followed {
+      id
+      username
+    }
+  }
+}
+```
+
+So when querying users, make sure you include the `pk` field in your query to get the correct integer ID to use in mutations.
+
+```graphql
+query {
+  users {
+    edges {
+      node {
+        id
+        pk   # Use this for follow/unfollow mutations
+        username
+      }
+    }
+  }
+}
+```
+
+---
+
 ## Summary
 
 - **Update Profile** → Change bio, picture, location, or birth date.  
