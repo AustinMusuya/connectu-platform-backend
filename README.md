@@ -193,6 +193,9 @@ Query and mutate posts using the **GraphQL Playground**.
 #### User Interactions Guide
 - [User Interactions](./User-Interactions.md)
 
+#### Posts, Likes, Comments & Nested Comments Guide
+- [Post Comments Likes](./Posts-Comments-Likes.md)
+
 ---
 
 ## Screenshots
