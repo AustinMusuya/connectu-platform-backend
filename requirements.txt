@@ -1,6 +1,7 @@
 aniso8601==7.0.0
 asgiref==3.9.1
 Django==5.2.6
+django-cors-headers==4.9.0
 django-filter==25.1
 django-graphql-auth==0.3.16
 django-graphql-jwt @ git+https://github.com/flavors/django-graphql-jwt.git@0debe4fbd5299e394ee253e6fa77e7a68b3236ba
