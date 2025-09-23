@@ -3,18 +3,30 @@ from graphene_django import DjangoObjectType
 from django.contrib.auth import get_user_model
 from .models import Post, Comment, PostLike, CommentLike
 from graphql_jwt.decorators import login_required
+from django.db.models import Count
 
 User = get_user_model()
 
 class PostType(DjangoObjectType):
+    comment_count = graphene.Int()
+    like_count = graphene.Int()
     class Meta:
         model = Post
         fields = '__all__'
 
+    def resolve_comment_count(self, info):
+        return getattr(self, 'comment_count', self.comments.count())  
+    
+    def resolve_like_count(self, info):
+        return getattr(self, 'like_count', self.likes.count())
 class CommentType(DjangoObjectType):
+    like_count = graphene.Int()
     class Meta:
         model = Comment
         fields = '__all__'
+
+    def resolve_like_count(self, info):
+        return getattr(self, 'like_count', self.likes.count())
 
 class PostLikeType(DjangoObjectType):
     class Meta:
@@ -47,47 +59,19 @@ class Query(graphene.ObjectType):
     # get all posts
     @login_required
     def resolve_posts(self, info, **kwargs):
-        return Post.objects.all()
+        return Post.objects.annotate(
+            comment_count=Count('comments', distinct=True), 
+            like_count=Count('likes', distinct=True),
+            ).select_related('author').prefetch_related('comments__author', 'likes__user')
 
     # get a single post
     @login_required
     def resolve_post(self, info, id):
-        return Post.objects.get(pk=id)
+        return Post.objects.annotate(
+            comment_count=Count('comments', distinct=True), 
+            like_count=Count('likes', distinct=True),
+            ).select_related('author').prefetch_related('comments__author', 'likes__user').get(pk=id)   
 
-    # get comments for a post
-    @login_required
-    def resolve_comments(self, info, post_id):
-        return Comment.objects.filter(post__id=post_id)
-    
-    # get comment count for a post
-    @login_required
-    def resolve_comments_count(self, info, post_id):
-        return Comment.objects.filter(post__id=post_id).count()
-
-    # get likes for a post
-    @login_required
-    def resolve_likes_post(self, info, post_id):
-        return PostLike.objects.filter(post__id=post_id)
-    
-    # get like count for a post
-    @login_required
-    def resolve_like_count(self, info, post_id):
-        return PostLike.objects.filter(post__id=post_id).count()
-    
-    # get likes for a comment
-    @login_required
-    def resolve_likes_comment(self, info, comment_id):
-        return CommentLike.objects.filter(comment__id=comment_id)
-    
-    # get like count for a comment
-    @login_required
-    def resolve_like_count_comment(self, info, comment_id):
-        return CommentLike.objects.filter(comment__id=comment_id).count()
-
-
-    # @login_required
-    # def resolve_shares(self, info, post_id): ##### Future implementation ######
-    #     return Share.objects.filter(post__id=post_id)
     
 class CreatePost(graphene.Mutation):
     post = graphene.Field(PostType)

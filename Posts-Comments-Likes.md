@@ -3,7 +3,6 @@
 ## Table of Contents
 - [Posts](#posts)
 - [Comments](#comments)
-- [Nested Comments](#nested-comments)
 - [Likes](#likes)
 - [Mutations Overview](#mutations-overview)
 
@@ -19,11 +18,18 @@ query {
     id
     title
     content
-    mediaUrl
-    createdAt
+    commentCount
+    likeCount
     author {
-      id
       username
+    }
+    comments {
+      id
+      content
+      likeCount
+      author {
+        username
+      }
     }
   }
 }
@@ -36,7 +42,19 @@ query {
     id
     title
     content
-    createdAt
+    commentCount
+    likeCount
+    author {
+      username
+    }
+    comments {
+      id
+      content
+      likeCount
+      author {
+        username
+      }
+    }
   }
 }
 ```
@@ -52,6 +70,8 @@ mutation {
       id
       title
       content
+      likeCount
+      commentCount
     }
   }
 }
@@ -72,25 +92,8 @@ mutation {
 ## Comments
 
 ### Queries
-- **Get comments for a post**
-```graphql
-query {
-  commentsPost(postId: 1) {
-    id
-    content
-    author {
-      username
-    }
-  }
-}
-```
-
-- **Count comments on a post**
-```graphql
-query {
-  commentsCount(postId: 1)
-}
-```
+- **Comments are nested under posts now**  
+(see `posts { comments { ... } }` above).  
 
 ### Mutations
 - **Create a comment on a post**
@@ -102,6 +105,7 @@ mutation {
     comment {
       id
       content
+      likeCount
     }
   }
 }
@@ -117,12 +121,7 @@ mutation {
 }
 ```
 
----
-
-## Nested Comments
-
-### Mutations
-- **Create a comment on a comment (nested comment)**
+- **Create a nested comment (reply)**
 ```graphql
 mutation {
   createCommentComment(parentCommentId: 1, content: "Replying to your comment") {
@@ -131,6 +130,7 @@ mutation {
     comment {
       id
       content
+      likeCount
     }
   }
 }
@@ -151,43 +151,8 @@ mutation {
 ## Likes
 
 ### Queries
-- **Get likes for a post**
-```graphql
-query {
-  likesPost(postId: 1) {
-    id
-    user {
-      username
-    }
-  }
-}
-```
-
-- **Count likes on a post**
-```graphql
-query {
-  likeCount(postId: 1)
-}
-```
-
-- **Get likes for a comment**
-```graphql
-query {
-  likesComment(commentId: 1) {
-    id
-    user {
-      username
-    }
-  }
-}
-```
-
-- **Count likes on a comment**
-```graphql
-query {
-  likeCountComment(commentId: 1)
-}
-```
+- **Likes are now exposed as `likeCount` on posts and comments**  
+(see queries above).  
 
 ### Mutations
 - **Like a post**
@@ -200,6 +165,7 @@ mutation {
       id
       post {
         id
+        likeCount
       }
     }
   }
@@ -226,6 +192,7 @@ mutation {
       id
       comment {
         id
+        likeCount
       }
     }
   }
