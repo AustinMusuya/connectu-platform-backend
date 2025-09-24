@@ -306,12 +306,14 @@ class Mutation(graphene.ObjectType):
     create_like_post = CreateLikePost.Field()
     unlike_post = UnlikePost.Field()
     delete_post = DeletePost.Field()
+    update_post = UpdatePost.Field()
 
-    # comments
+    # comments and nested comments
     create_comment = CreateComment.Field()
+    update_comment = UpdateComment.Field()
     delete_comment = DeleteComment.Field()
     create_like_comment = CreateLikeComment.Field()
-    unlike_comment = UnlikeComment.Field()   
+    unlike_comment = UnlikeComment.Field()
     create_comment_comment = CreateCommentComment.Field()
     
     
