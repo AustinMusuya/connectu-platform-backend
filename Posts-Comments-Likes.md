@@ -139,7 +139,7 @@ mutation {
 - **Delete a nested comment**
 ```graphql
 mutation {
-  deleteCommentComment(commentId: 2) {
+  deleteComment(commentId: 2) {
     success
     message
   }
