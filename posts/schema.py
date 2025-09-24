@@ -109,6 +109,34 @@ class DeletePost(graphene.Mutation):
             return DeletePost(success=False, message="Post not found or you do not have permission to delete it.")
 
 
+class UpdatePost(graphene.Mutation):
+    post = graphene.Field(PostType)
+
+    class Arguments:
+        post_id = graphene.ID(required=True)
+        title = graphene.String()
+        content = graphene.String()
+        media_url = graphene.String()
+    
+    success = graphene.Boolean()
+    message = graphene.String()
+
+    @login_required
+    def mutate(self, info, post_id, title=None, content=None, media_url=None):
+        user = info.context.user
+        try:
+            post = Post.objects.get(pk=post_id, author=user)
+            if title is not None:
+                post.title = title
+            if content is not None:
+                post.content = content
+            if media_url is not None:
+                post.media_url = media_url
+            post.save()
+            return UpdatePost(post=post, success=True, message="Post updated successfully.")
+        except Post.DoesNotExist:
+            return UpdatePost(success=False, message="Post not found or you do not have permission to update it.")
+
 class CreateComment(graphene.Mutation):
     comment = graphene.Field(CommentType)
 
@@ -143,7 +171,28 @@ class DeleteComment(graphene.Mutation):
             return DeleteComment(success=True, message="Comment deleted successfully.")
         except Comment.DoesNotExist:
             return DeleteComment(success=False, message="Comment not found or you do not have permission to delete it.")
-        
+
+class UpdateComment(graphene.Mutation):
+    comment = graphene.Field(CommentType)
+
+    class Arguments:
+        comment_id = graphene.ID(required=True)
+        content = graphene.String(required=True)
+    
+    success = graphene.Boolean()
+    message = graphene.String()
+
+    @login_required
+    def mutate(self, info, comment_id, content):
+        user = info.context.user
+        try:
+            comment = Comment.objects.get(pk=comment_id, author=user)
+            comment.content = content
+            comment.save()
+            return UpdateComment(comment=comment, success=True, message="Comment updated successfully.")
+        except Comment.DoesNotExist:
+            return UpdateComment(success=False, message="Comment not found or you do not have permission to update it.")      
+
 class CreateCommentComment(graphene.Mutation):
     comment = graphene.Field(CommentType)
 
@@ -161,24 +210,6 @@ class CreateCommentComment(graphene.Mutation):
         comment = Comment(post=parent_comment.post, author=user, content=content)
         comment.save()
         return CreateCommentComment(comment=comment, success=True, message="Comment added successfully.")
-    
-class DeleteCommentComment(graphene.Mutation):
-    success = graphene.Boolean()
-    message = graphene.String()
-
-    class Arguments:
-        comment_id = graphene.ID(required=True)
-
-    @login_required
-    def mutate(self, info, comment_id):
-        user = info.context.user
-        try:
-            comment = Comment.objects.get(pk=comment_id, author=user)
-            comment.delete()
-            return DeleteCommentComment(success=True, message="Comment deleted successfully.")
-        except Comment.DoesNotExist:
-            return DeleteCommentComment(success=False, message="Comment not found or you do not have permission to delete it.")
-
     
 class CreateLikePost(graphene.Mutation):
     like = graphene.Field(PostLikeType)
@@ -282,7 +313,6 @@ class Mutation(graphene.ObjectType):
     create_like_comment = CreateLikeComment.Field()
     unlike_comment = UnlikeComment.Field()   
     create_comment_comment = CreateCommentComment.Field()
-    delete_comment_comment = DeleteCommentComment.Field()
     
     
     
