@@ -60,15 +60,17 @@ This project was developed as part of the **ProDev Backend Engineering program**
 
 ## Installation
 
-You can run this project either **via Docker** or in a **local Python environment**.
+You can run this project in a **local Python environment**.
 
----
+<!-- ---
 
 ### **Method 1 — Docker Compose (Recommended)**
 
 1. **Clone the repository**
 
 ```bash
+# Terminal
+
 git clone https://github.com/AustinMusuya/connectu-platform-backend.git
 cd connectu-platform-backend
 ```
@@ -114,35 +116,36 @@ docker compose exec web python manage.py createsuperuser
 - GraphQL Playground: `http://127.0.0.1:8000/graphql/`
 - Admin panel: `http://127.0.0.1:8000/admin/`
 
----
+--- -->
 
-### **Method 2 — Local Virtual Environment**
+### **Local Virtual Environment**
 
 1. **Clone the repository**
 
 ```bash
+# Terminal
+
 git clone https://github.com/AustinMusuya/connectu-platform-backend.git
+
 cd connectu-platform-backend
 ```
 
 2. **Create virtual environment**
 
 ```bash
+# Terminal
+
 python3 -m venv env
+
 source env/bin/activate   # Mac/Linux
-env\Scripts\activate      # Windows
 ```
 
-3. **Install dependencies**
-
-```bash
-pip install -r requirements.txt
-```
-
-4. **Configure database in `settings.py`**  
+3. **Configure database in `settings.py`**  
    Example (PostgreSQL):
 
 ```python
+# connect_u_backend/settings.py
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -154,23 +157,50 @@ DATABASES = {
     }
 }
 ```
+Or
 
-5. **Apply migrations**
+Example for SQlite3
 
-```bash
-python manage.py makemigrations
-python manage.py migrate
+```python
+# connect_u_backend/settings.py
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 ```
 
-6. **Create a superuser**
+4. **Run build script to set up project**
+
+***MacOS/Linux***
+```bash
+# Terminal
+
+./build.sh
+```
+***Windows***
+```bash
+Come back when you are serious about coding.😂 
+```
+
+5. **Create a superuser (optional)**
 
 ```bash
 python manage.py createsuperuser
 ```
 
-7. **Run server**
+7. **Running the server**
 
+```python
+# connect_u_backend/settings.py
+
+DEBUG = True # set this to True
+```
 ```bash
+# Terminal
+
 python manage.py runserver
 ```
 
