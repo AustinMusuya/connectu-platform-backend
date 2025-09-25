@@ -30,6 +30,8 @@ mutation {
   ) {
     success
     errors
+    token
+    refreshToken
   }
 }
 ```
@@ -59,7 +61,7 @@ mutation {
 
 ```graphql
 mutation {
-  tokenAuth(username: "user@example.com", password: "StrongPassword123!") {
+  tokenAuth(email: "user@example.com", password: "StrongPassword123!") {
     success
     errors
     token  # Access token (short-lived, 15 minutes)
