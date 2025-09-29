@@ -77,7 +77,7 @@ class FollowUser(graphene.Mutation):
 
             if created:
                 follow.save()
-                return FollowUser(success=True, follower=follower, followed=followed)
+                return FollowUser(success=True, message="You are now following this user.", follower=follower, followed=followed)
             else:
                 return FollowUser(success=False, message="You are already following this user.")
         except User.DoesNotExist:
@@ -106,7 +106,7 @@ class UnfollowUser(graphene.Mutation):
 
             if follow:
                 follow.delete()
-                return UnfollowUser(success=True, follower=follower, unfollowed=unfollowed)
+                return UnfollowUser(success=True, message="You have successfully unfollowed this user.", follower=follower, unfollowed=unfollowed)
             else:
                 return UnfollowUser(success=False, message="You are not following this user.")
         except User.DoesNotExist:
