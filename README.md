@@ -5,6 +5,8 @@ It focuses on **GraphQL APIs**, **real-time interactions**, and **scalable datab
 
 This project was developed as part of the **ProDev Backend Engineering program**, showcasing backend best practices and advanced API design.
 
+**Project Live Demo link:** https://connectu-platform-backend-api.onrender.com/
+
 ---
 
 ## 📑 Table of Contents
